@@ -6,6 +6,6 @@ using namespace std;
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    Server xd;
+    Server server;
     return a.exec();
 }

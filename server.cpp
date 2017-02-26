@@ -14,7 +14,7 @@ Server::Server(QObject *parent) : QObject(parent)
 }
 void Server::foundRenderer(DLNARenderer *server){
     // Get local adress
-    QString id = QString::number(fileServer->serveFile(QUrl("/home/rlot/public/test.mp4"))); // File to serve
+    QString id = QString::number(fileServer->serveFile(QUrl("example.mp4"))); // File to serve
     server->setPlaybackUrl( QUrl("http://"+getLocalAddress().toString()+":"+QString::number(port)+"/"+id+".mp4") ); // Eh, need to be made better
     server->playPlayback();
 }
