@@ -49,7 +49,7 @@ void HttpFileServer::handleIncoming()
             requestMap.insert(key, value);
         }
     // If not error occured, send and process file
-    if(!error) {
+    if(!error && !filePath.isEmpty()) {
             QFile *file = new QFile(filePath.toString());
             file->open(QFile::ReadOnly);
             QByteArray block;
