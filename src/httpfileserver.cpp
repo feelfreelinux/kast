@@ -32,10 +32,13 @@ void HttpFileServer::handleIncoming()
             if(line.startsWith("GET /")){
                 line.replace("GET /", ""); // HTTP header left part
                 line.chop(11); // HTTP header right part
-                filePath = fileMap[line.split(".").first().toInt()];
+                int id = line.left(line.lastIndexOf("/")).toInt();
+                QString fileName = line.right(line.length() - line.lastIndexOf("/") - 1);
+                filePath = fileMap[id];
                 // Checks, is file valid
                 fileinfo.setFile(filePath.toString());
                 if(fileinfo.suffix() != line.split(".").last() ||
+                        fileinfo.fileName() != fileName ||
                         !fileinfo.exists() ||
                         !fileinfo.isFile() ||
                         !fileinfo.isReadable() ) { error = true; continue; }
@@ -97,4 +100,10 @@ int HttpFileServer::serveFile(QUrl path)
 {
     fileMap.insert(fileMap.count(), path);
     return fileMap.count() - 1;
+}
+
+QString HttpFileServer::getFilenameFromID(int id)
+{
+    QUrl file(fileMap[id]);
+    return file.fileName();
 }

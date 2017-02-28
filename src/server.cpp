@@ -19,11 +19,11 @@ Server::Server(QCoreApplication &core, QObject *parent) : QObject(parent)
 }
 void Server::foundRenderer(DLNARenderer *server){
     // Get local adress
-    foreach(const QString &file, filesList) {
-        QString id = QString::number(fileServer->serveFile(QUrl(file))); // File to serve
-        server->setPlaybackUrl( QUrl("http://"+getLocalAddress().toString()+":"+QString::number(port)+"/"+id+".mp4") ); // Eh, need to be made better
-        server->playPlayback();
-    }
+    int id = fileServer->serveFile(QUrl(filesList[0])); // File to serve
+    QString fileName = fileServer->getFilenameFromID(id);
+    server->setPlaybackUrl(QUrl("http://"+getLocalAddress().toString()+":"+
+                                QString::number(port)+"/"+QString::number(id)+"/"+fileName)); // Eh, need to be made better
+    server->playPlayback();
 }
 QHostAddress Server::getLocalAddress() {
     // @see http://stackoverflow.com/questions/13835989/get-local-ip-address-in-qt
