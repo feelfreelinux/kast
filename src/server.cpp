@@ -4,19 +4,26 @@
 #include "ssdpdiscovery.h"
 #include "dlnarenderer.h"
 #include "httpfileserver.h"
+
 int port = 1337;
-Server::Server(QObject *parent) : QObject(parent)
+QStringList filesList;
+
+Server::Server(QCoreApplication &core, QObject *parent) : QObject(parent)
 {
     qDebug() << "Starting server...";
     fileServer = new HttpFileServer(port, QHostAddress::Any, this);
     SSDPdiscovery *test = new SSDPdiscovery(this);
     connect(test, SIGNAL(foundRenderer(DLNARenderer*)), this, SLOT(foundRenderer(DLNARenderer*)));
+    filesList = core.arguments();
+    filesList.removeFirst();
 }
 void Server::foundRenderer(DLNARenderer *server){
     // Get local adress
-    QString id = QString::number(fileServer->serveFile(QUrl("/home/rlot/public/test.mp4"))); // File to serve
-    server->setPlaybackUrl( QUrl("http://"+getLocalAddress().toString()+":"+QString::number(port)+"/"+id+".mp4") ); // Eh, need to be made better
-    server->playPlayback();
+    foreach(const QString &file, filesList) {
+        QString id = QString::number(fileServer->serveFile(QUrl(file))); // File to serve
+        server->setPlaybackUrl( QUrl("http://"+getLocalAddress().toString()+":"+QString::number(port)+"/"+id+".mp4") ); // Eh, need to be made better
+        server->playPlayback();
+    }
 }
 QHostAddress Server::getLocalAddress() {
     // @see http://stackoverflow.com/questions/13835989/get-local-ip-address-in-qt

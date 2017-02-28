@@ -8,7 +8,7 @@ class Server : public QObject
 {
     Q_OBJECT
 public:
-    Server(QObject *parent = 0);
+    Server(QCoreApplication& core, QObject *parent = 0);
     QHostAddress getLocalAddress();
 private:
     HttpFileServer *fileServer;
