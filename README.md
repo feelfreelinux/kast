@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.com/feelfreelinux/kast.svg?token=i8py4h6aCePPndssFYZf&branch=master)](https://travis-ci.com/feelfreelinux/kast)
 # Kast
 
 Kast is a simple yet powerful DLNA control tool. It is completely cross-platform; Linux, Windows and Android are officially supported.
