@@ -17,7 +17,8 @@ Server::Server(QCoreApplication &core, QObject *parent) : QObject(parent)
     filesList = core.arguments();
     filesList.removeFirst();
 }
-void Server::foundRenderer(DLNARenderer *server){
+void Server::foundRenderer(DLNARenderer *server)
+{
     // Get local adress
     int id = fileServer->serveFile(QUrl(filesList[0])); // File to serve
     QString fileName = fileServer->getFilenameFromID(id);
@@ -25,9 +26,11 @@ void Server::foundRenderer(DLNARenderer *server){
                                 QString::number(port)+"/"+QString::number(id)+"/"+fileName)); // Eh, need to be made better
     server->playPlayback();
 }
-QHostAddress Server::getLocalAddress() {
-    // @see http://stackoverflow.com/questions/13835989/get-local-ip-address-in-qt
-    foreach (const QHostAddress &address, QNetworkInterface::allAddresses()) {
+QHostAddress Server::getLocalAddress()
+{
+    // see http://stackoverflow.com/questions/13835989/get-local-ip-address-in-qt
+    foreach (const QHostAddress &address, QNetworkInterface::allAddresses())
+    {
         if (address.protocol() == QAbstractSocket::IPv4Protocol
                 && address != QHostAddress(QHostAddress::LocalHost) // Check is it not local adress
                 && address.toString().section( ".",-1,-1 ) != "1") // Check, is it not virtual machine @see

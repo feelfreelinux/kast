@@ -4,11 +4,12 @@
 #include <QtNetwork>
 #include "dlnarenderer.h"
 #include "httpfileserver.h"
+
 class Server : public QObject
 {
     Q_OBJECT
 public:
-    Server(QCoreApplication& core, QObject *parent = 0);
+    Server(QCoreApplication & core, QObject *parent = 0);
     QHostAddress getLocalAddress();
 private:
     HttpFileServer *fileServer;

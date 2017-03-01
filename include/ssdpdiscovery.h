@@ -19,7 +19,7 @@ private:
     QUdpSocket *udpSocket;
     QHostAddress groupAddress;
 signals:
-    void foundRenderer( DLNARenderer *renderer );
+    void foundRenderer(DLNARenderer *renderer);
 };
 
 #endif // SSDPDISCOVERY_H
