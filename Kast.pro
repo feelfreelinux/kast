@@ -1,7 +1,7 @@
 QT += core network
 QT -= gui
 
-TARGET = DLNA
+TARGET = kast
 
 CONFIG += console c++11 warn_on
 CONFIG -= app_bundle

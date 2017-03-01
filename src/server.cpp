@@ -33,6 +33,7 @@ QHostAddress Server::getLocalAddress() {
                 && address.toString().section( ".",-1,-1 ) != "1") // Check, is it not virtual machine @see
              return address;
     }
+    return QHostAddress();
 }
 
 
