@@ -9,6 +9,11 @@ class HttpFileServer : public QObject
     Q_OBJECT
 public:
     HttpFileServer(int port, QHostAddress address, QObject *parent = 0);
+    /**
+     * @brief Adds file to server stack
+     * @param Path of file
+     * @return ID of added file
+     */
     int serveFile(QUrl path);
     /**
      * @brief Returns the full filename of the given ID
