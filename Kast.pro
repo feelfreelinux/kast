@@ -12,7 +12,8 @@ SOURCES += src/main.cpp \
     src/server.cpp \
     src/ssdpdiscovery.cpp \
     src/dlnarenderer.cpp \
-    src/httpfileserver.cpp
+    src/httpfileserver.cpp \
+    src/soapactionmanager.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -31,4 +32,5 @@ HEADERS += \
     include/server.h \
     include/ssdpdiscovery.h \
     include/dlnarenderer.h \
-    include/httpfileserver.h
+    include/httpfileserver.h \
+    include/soapactionmanager.h

@@ -1,10 +1,11 @@
 #include "dlnarenderer.h"
+#include "soapactionmanager.h"
 #include <QDebug>
 
 DLNARenderer::DLNARenderer(QUrl url, QObject *parent) : QObject(parent)
 {
     serverUrl = url;
-    mgr = new QNetworkAccessManager(this);
+    sam = new SOAPActionManager();
 }
 
 QString DLNARenderer::getControlUrl() { return controlUrl; }
@@ -22,37 +23,21 @@ void DLNARenderer::setControlUrl(const QString & url)
     fullcontrolUrl.setPath(url);
 }
 
+// @TODO Soap action's xml data, should be generated somewhere in SOAPActionManager. Not sure how to handle it, so keeping it as-is
 void DLNARenderer::setPlaybackUrl(QUrl url)
 {
-    QNetworkRequest request;
-    QByteArray data;
-    data.append("<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:SetAVTransportURI xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID><CurrentURI><![CDATA["+url.toString()+"]]></CurrentURI><CurrentURIMetaData></CurrentURIMetaData></u:SetAVTransportURI></s:Body></s:Envelope>");
-    
-    request.setUrl(fullcontrolUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "text/xml; charset=utf-8");
-    request.setRawHeader("SOAPAction", "urn:schemas-upnp-org:service:AVTransport:1#SetAVTransportURI");
-    
-    connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(test(QNetworkReply*)));
-    
-    mgr->post(request, data);
+    QString requestData = "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:SetAVTransportURI xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID><CurrentURI><![CDATA["+url.toString()+"]]></CurrentURI><CurrentURIMetaData></CurrentURIMetaData></u:SetAVTransportURI></s:Body></s:Envelope>";
+    sam->doAction("SetAVTransportURI", requestData, fullcontrolUrl);
 }
 
 void DLNARenderer::playPlayback()
 {
-    QNetworkRequest request;
-    QByteArray data;
-    data.append("<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:Play xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID><Speed>1</Speed></u:Play></s:Body></s:Envelope>");
-    
-    request.setUrl(fullcontrolUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "text/xml; charset=utf-8");
-    request.setRawHeader("SOAPAction", "urn:schemas-upnp-org:service:AVTransport:1#Play");
-    
-    connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(test(QNetworkReply*)));
-    
-    mgr->post(request, data);
+    QString requestData = "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:Play xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID><Speed>1</Speed></u:Play></s:Body></s:Envelope>";
+    sam->doAction("Play", requestData, fullcontrolUrl);
 }
 
-void DLNARenderer::test(QNetworkReply* reply)
+void DLNARenderer::pausePlayback()
 {
-    qDebug() << reply->readAll().data();
+    QString requestData = "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:Pause xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID></u:Pause></s:Body></s:Envelope>";
+    sam->doAction("Pause", requestData, fullcontrolUrl);
 }

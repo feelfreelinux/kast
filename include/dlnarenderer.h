@@ -2,6 +2,7 @@
 #define DLNARENDERER_H
 #include <QtNetwork>
 #include <QObject>
+#include "soapactionmanager.h"
 
 class DLNARenderer : public QObject
 {
@@ -17,13 +18,12 @@ public:
     void setName(const QString & name);
     void setPlaybackUrl(QUrl url);
     void playPlayback();
+    void pausePlayback();
     void setUrl(QUrl url);
 private:
-    QNetworkAccessManager *mgr;
+    SOAPActionManager *sam;
     QUrl serverUrl, fullcontrolUrl;
     QString serverName, controlUrl;
-private slots:
-    void test(QNetworkReply* reply);
 };
 
 #endif // DLNARENDERER_H
