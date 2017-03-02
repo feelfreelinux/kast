@@ -8,7 +8,7 @@ class SOAPActionManager : public QObject
     Q_OBJECT
 public:
     explicit SOAPActionManager(QObject *parent = 0);
-    void doAction(QString action, QString requestData, QUrl controlUrl);
+    void doAction(QString action, QString actionData, QUrl controlUrl);
 private:
     QNetworkAccessManager *mgr;
 private slots:
