@@ -39,3 +39,9 @@ void DLNARenderer::pausePlayback()
     QString requestData = "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:Pause xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID></u:Pause></s:Body></s:Envelope>";
     sam->doAction("Pause", requestData, fullcontrolUrl);
 }
+
+void DLNARenderer::seekPlayback(QTime time)
+{
+    QString requestData = "<?xml version=\"1.0\" encoding=\"utf-8\"?><s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:Seek xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID><Unit>REL_TIME</Unit><Target>"+time.toString()+"</Target></u:Seek></s:Body></s:Envelope>";
+    sam->doAction("Seek", requestData, fullcontrolUrl);
+}
