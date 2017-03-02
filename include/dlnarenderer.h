@@ -1,8 +1,10 @@
 #ifndef DLNARENDERER_H
 #define DLNARENDERER_H
+
+#include "soapactionmanager.h"
+
 #include <QtNetwork>
 #include <QObject>
-#include "soapactionmanager.h"
 
 class DLNARenderer : public QObject
 {

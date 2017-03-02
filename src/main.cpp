@@ -1,18 +1,17 @@
 #include <QCoreApplication>
 #include "server.h"
 #include "dlnarenderer.h"
-using namespace std;
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication app(argc, argv);
     
-    if (a.arguments().count() <= 1)
-    {
-        qDebug() << "Usage: kast <path of file to stream>";
-        return 1;
-    }
+    if(app.arguments().count() <= 1)
+        qFatal("Usage: kast <list of files to stream>");
 
-    Server server(a);
-    return a.exec();
+    QStringList files = app.arguments();
+    files.removeFirst();
+
+    Server server(files);
+    return app.exec();
 }

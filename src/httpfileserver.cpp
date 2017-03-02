@@ -1,4 +1,5 @@
 #include "httpfileserver.h"
+
 #include <QTcpServer>
 #include <QMimeDatabase>
 #include <QFile>
@@ -122,6 +123,5 @@ int HttpFileServer::serveFile(QUrl path)
 
 QString HttpFileServer::getFilenameFromID(int id)
 {
-    QUrl file(fileMap[id]);
-    return file.fileName();
+    return QUrl(fileMap[id]).fileName();
 }

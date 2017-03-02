@@ -1,5 +1,4 @@
 #include "soapactionmanager.h"
-#include <QtNetwork>
 #include <QDebug>
 
 SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)

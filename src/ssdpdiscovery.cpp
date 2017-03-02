@@ -55,8 +55,8 @@ void SSDPdiscovery::processData()
     QXmlStreamReader xml(result.data());
     reply->close();
 
-    DLNARenderer *renderer = new DLNARenderer( reply->url(), this);
-    // @TODO Add beter error handling here, should be moved to DLNARenderer class constructor
+    DLNARenderer *renderer = new DLNARenderer(reply->url(), this);
+    // TODO: Add beter error handling here, should be moved to DLNARenderer class constructor
     while(!xml.hasError() && !xml.atEnd())
     {
         xml.readNextStartElement();
