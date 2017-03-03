@@ -21,6 +21,7 @@ public:
 
     void playPlayback();
     void pausePlayback();
+    void seekPlayback(QTime time);
 private:
     SOAPActionManager *sam;
     QUrl serverUrl, fullcontrolUrl;

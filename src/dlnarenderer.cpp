@@ -36,3 +36,8 @@ void DLNARenderer::pausePlayback()
 {
     sam->doAction("Pause", "", fullcontrolUrl);
 }
+
+void DLNARenderer::seekPlayback(QTime time)
+{
+    sam->doAction("Seek", "<InstanceID>0</InstanceID><Unit>REL_TIME</Unit><Target>"+time.toString()+"</Target>", fullcontrolUrl);
+}
