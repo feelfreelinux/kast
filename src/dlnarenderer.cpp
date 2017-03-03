@@ -1,5 +1,4 @@
 #include "dlnarenderer.h"
-#include "soapactionmanager.h"
 
 #include <QDebug>
 
@@ -20,7 +19,7 @@ void DLNARenderer::setControlUrl(const QString & url)
     fullcontrolUrl.setPath(url);
 }
 
-void DLNARenderer::setPlaybackUrl(QUrl url)
+void DLNARenderer::setPlaybackUrl(const QUrl & url)
 {
     sam->doAction(
                 "SetAVTransportURI", // Action

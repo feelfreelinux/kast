@@ -7,7 +7,6 @@
 #include <QTcpSocket>
 #include <QUrl>
 
-QMap<int, QUrl> fileMap;
 
 HttpFileServer::HttpFileServer(int port, QHostAddress address, QObject *parent) : QObject(parent)
 {
@@ -26,11 +25,13 @@ void HttpFileServer::handleIncoming()
     connect(clientConnection, SIGNAL(disconnected()),
             clientConnection, SLOT(deleteLater()));
     clientConnection->waitForReadyRead();
+
     QUrl filePath;
     QMap<QString, QString> requestMap;
+
     while (!clientConnection->atEnd())
     {
-            QString line(clientConnection->readLine());
+            QString line = clientConnection->readLine();
             
             // Get filename from request
             if(line.startsWith("GET /"))
@@ -63,13 +64,13 @@ void HttpFileServer::handleIncoming()
                     
             requestMap.insert(key, value);
     }
-    // If not error occured, send and process file
+    // If no error occured, send and process file
     if(!error && !filePath.isEmpty())
     {
-            QFile *file = new QFile(filePath.toString());
-            file->open(QFile::ReadOnly);
+            QFile file(filePath.toString());
+            file.open(QFile::ReadOnly);
             QByteArray block;
-            QString header, filesize(QString::number(file->size()));
+            QString header, filesize(QString::number(file.size()));
 
             if(requestMap.contains("Range"))
             {
@@ -77,12 +78,12 @@ void HttpFileServer::handleIncoming()
                 range = range.mid(6, range.length()); // 'bytes=' is 6 chars
                 qint64 seek = range.left(range.indexOf("-")).toInt();
                 if (range.endsWith("-"))
-                    range.append(QString::number(file->size() - 1));
+                    range.append(QString::number(file.size() - 1));
                 header = "HTTP/1.0 206 PARTIAL CONTENT\r\n"
                          "Content-Length: "+filesize+"\r\n"
                          "Content-Range: bytes "+range+"/"+filesize + "\r\n"
                          "Content-Type: "+db.mimeTypeForFile(fileinfo).name()+"\r\n\r\n";
-                file->seek(seek);
+                file.seek(seek);
             }
             else
                 header = "HTTP/1.0 200 OK\r\n"
@@ -95,27 +96,22 @@ void HttpFileServer::handleIncoming()
             clientConnection->waitForBytesWritten();
             block.resize(65536);
 
-            while(!file->atEnd())
+            while(!file.atEnd())
             {
-                qint64 read = file->read(block.data(), 65536);
+                qint64 read = file.read(block.data(), 65536);
                 clientConnection->write(block, read);
-
             }
 
-            file->close();
+            file.close();
         }
         else
-        {
-            // Send 404
-            QByteArray response;
-            response.append("HTTP/1.0 404 NOT FOUND\r\n");
-            clientConnection->write(response);
-        }
+            clientConnection->write("HTTP/1.0 404 NOT FOUND\r\n");
+
         clientConnection->flush();
         clientConnection->disconnectFromHost();
 }
 
-int HttpFileServer::serveFile(QUrl path)
+int HttpFileServer::serveFile(const QUrl & path)
 {
     fileMap.insert(fileMap.count(), path);
     return fileMap.count() - 1;

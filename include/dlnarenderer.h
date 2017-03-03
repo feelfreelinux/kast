@@ -4,7 +4,6 @@
 #include "soapactionmanager.h"
 
 #include <QtNetwork>
-#include <QObject>
 
 class DLNARenderer : public QObject
 {
@@ -16,12 +15,12 @@ public:
     QString getControlUrl();
     QString getName();
     
-    void setControlUrl(const QString & name);
     void setName(const QString & name);
-    void setPlaybackUrl(QUrl url);
+    void setControlUrl(const QString & name);
+    void setPlaybackUrl(const QUrl & url);
+
     void playPlayback();
     void pausePlayback();
-    void setUrl(QUrl url);
 private:
     SOAPActionManager *sam;
     QUrl serverUrl, fullcontrolUrl;

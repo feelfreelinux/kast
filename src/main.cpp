@@ -1,6 +1,5 @@
 #include <QCoreApplication>
 #include "server.h"
-#include "dlnarenderer.h"
 
 int main(int argc, char *argv[])
 {
