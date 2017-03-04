@@ -15,18 +15,10 @@ SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)
 void SOAPActionManager::doAction(QString action, QString actionData, QUrl controlUrl)
 {
     QNetworkRequest request;
-    QByteArray data, actionHeader("urn:schemas-upnp-org:service:AVTransport:1#");
 
     // Build xml request body
-    data.append(SOAPXmlHeader);
-    data.append(action);
-    data.append(SOAPXmlInstanceId);
-    data.append(actionData);
-    data.append(SOAPXmlActions);
-    data.append(action);
-    data.append(SOAPXmlFooter);
-
-    actionHeader.append(action);
+    QString data = SOAPXmlHeader + action + SOAPXmlInstanceId + actionData + SOAPXmlActions + action + SOAPXmlFooter;
+    QByteArray actionHeader = QString("urn:schemas-upnp-org:service:AVTransport:1#" + action).toUtf8();
 
     request.setUrl(controlUrl);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "text/xml; charset=utf-8");
@@ -34,7 +26,7 @@ void SOAPActionManager::doAction(QString action, QString actionData, QUrl contro
 
     connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processData(QNetworkReply*)));
 
-    mgr->post(request, data);
+    mgr->post(request, data.toUtf8());
 }
 
 void SOAPActionManager::processData(QNetworkReply* reply)

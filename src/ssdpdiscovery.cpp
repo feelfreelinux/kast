@@ -26,7 +26,7 @@ SSDPdiscovery::SSDPdiscovery(QObject *parent) : QObject(parent)
 // Process received datagrams, and get IP of DLNA DMR
 void SSDPdiscovery::processPendingDatagrams()
 {
-    while (udpSocket->hasPendingDatagrams())
+    while(udpSocket->hasPendingDatagrams())
     {
         QByteArray datagram;
         datagram.resize(udpSocket->pendingDatagramSize());
@@ -51,8 +51,7 @@ void SSDPdiscovery::processPendingDatagrams()
 // This function process request data, into DLNA Server
 void SSDPdiscovery::processData()
 {
-    QByteArray result = reply->readAll();
-    QXmlStreamReader xml(result.data());
+    QXmlStreamReader xml(reply->readAll());
     reply->close();
 
     DLNARenderer *renderer = new DLNARenderer(reply->url(), this);
@@ -62,11 +61,10 @@ void SSDPdiscovery::processData()
         xml.readNextStartElement();
         if(xml.name()=="serviceId" && xml.readElementText()=="urn:upnp-org:serviceId:AVTransport")
         {
-            while(!(xml.name()=="controlURL") && !xml.atEnd()) xml.readNextStartElement();
+            while(!(xml.name()=="controlURL") && !xml.atEnd())
+                xml.readNextStartElement();
             if(xml.name()=="controlURL")
-            {
-                renderer->setControlUrl( xml.readElementText() );
-            }
+                renderer->setControlUrl(xml.readElementText());
         }
         else if(xml.name()=="friendlyName")
             renderer->setName(xml.readElementText());

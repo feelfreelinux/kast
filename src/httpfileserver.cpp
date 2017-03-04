@@ -6,13 +6,14 @@
 #include <QFileInfo>
 #include <QTcpSocket>
 #include <QUrl>
-
+#include <QDebug>
 
 HttpFileServer::HttpFileServer(int port, QHostAddress address, QObject *parent) : QObject(parent)
 {
     server = new QTcpServer(this);
     connect(server, SIGNAL(newConnection()), this, SLOT(handleIncoming()));
     server->listen(address, port);
+    qDebug() << "FILE SERVER: started";
 }
 
 void HttpFileServer::handleIncoming()
@@ -29,7 +30,7 @@ void HttpFileServer::handleIncoming()
     QUrl filePath;
     QMap<QString, QString> requestMap;
 
-    while (!clientConnection->atEnd())
+    while(!clientConnection->atEnd())
     {
             QString line = clientConnection->readLine();
             
@@ -51,6 +52,7 @@ void HttpFileServer::handleIncoming()
                         !fileinfo.isFile() ||
                         !fileinfo.isReadable())
                 {
+                    qDebug() << "File not valid: " + filePath.toString();
                     error = true;
                     continue;
                 }
@@ -69,32 +71,31 @@ void HttpFileServer::handleIncoming()
     {
             QFile file(filePath.toString());
             file.open(QFile::ReadOnly);
-            QByteArray block;
-            QString header, filesize(QString::number(file.size()));
+            QString header, filesize = QString::number(file.size());
 
             if(requestMap.contains("Range"))
             {
                 QString range = requestMap["Range"];
                 range = range.mid(6, range.length()); // 'bytes=' is 6 chars
                 qint64 seek = range.left(range.indexOf("-")).toInt();
-                if (range.endsWith("-"))
+                if(range.endsWith("-"))
                     range.append(QString::number(file.size() - 1));
-                header = "HTTP/1.0 206 PARTIAL CONTENT\r\n"
-                         "Content-Length: "+filesize+"\r\n"
-                         "Content-Range: bytes "+range+"/"+filesize + "\r\n"
-                         "Content-Type: "+db.mimeTypeForFile(fileinfo).name()+"\r\n\r\n";
+                header = QString("HTTP/1.0 206 PARTIAL CONTENT\r\n"
+                         "Content-Length: %1\r\n"
+                         "Content-Range: bytes %2/%1\r\n"
+                         "Content-Type: %3\r\n\r\n").arg(filesize, range,
+                                                         db.mimeTypeForFile(fileinfo).name());
                 file.seek(seek);
             }
             else
-                header = "HTTP/1.0 200 OK\r\n"
-                            "Content-Length: "+filesize+"\r\n"
-                            "Content-Type: "+db.mimeTypeForFile(fileinfo).name()+"\r\n\r\n";
+                header = QString("HTTP/1.0 200 OK\r\n"
+                         "Content-Length: %1\r\n"
+                         "Content-Type: %2\r\n\r\n").arg(filesize,
+                                                         db.mimeTypeForFile(fileinfo).name());
 
-            block.append(header);
-            clientConnection->write(block);
-            block.clear();
+            clientConnection->write(header.toUtf8());
             clientConnection->waitForBytesWritten();
-            block.resize(65536);
+            QByteArray block; block.resize(65536);
 
             while(!file.atEnd())
             {
