@@ -27,6 +27,14 @@ void DLNARenderer::setPlaybackUrl(const QUrl & url)
                 fullcontrolUrl); // Control url
 }
 
+void DLNARenderer::setNextPlaybackUrl(const QUrl & url)
+{
+    sam->doAction(
+                "SetNextAVTransportURI", // Action
+                "<NextURI>"+url.toString()+"</NextURI><NextURIMetaData></NextURIMetaData>",  // Action Data
+                fullcontrolUrl); // Control url
+}
+
 void DLNARenderer::playPlayback()
 {
     sam->doAction("Play", "<Speed>1</Speed>", fullcontrolUrl);
@@ -35,6 +43,16 @@ void DLNARenderer::playPlayback()
 void DLNARenderer::pausePlayback()
 {
     sam->doAction("Pause", "", fullcontrolUrl);
+}
+
+void DLNARenderer::previousPlayback()
+{
+    sam->doAction("Previous", "", fullcontrolUrl);
+}
+
+void DLNARenderer::nextPlayback()
+{
+    sam->doAction("Next", "", fullcontrolUrl);
 }
 
 void DLNARenderer::seekPlayback(QTime time)

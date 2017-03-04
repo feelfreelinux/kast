@@ -18,9 +18,12 @@ public:
     void setName(const QString & name);
     void setControlUrl(const QString & name);
     void setPlaybackUrl(const QUrl & url);
+    void setNextPlaybackUrl(const QUrl & url);
 
     void playPlayback();
     void pausePlayback();
+    void nextPlayback();
+    void previousPlayback();
     void seekPlayback(QTime time);
 private:
     SOAPActionManager *sam;
