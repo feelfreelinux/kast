@@ -1,11 +1,10 @@
-#include "server.h"
+#include "kast.h"
 #include "ssdpdiscovery.h"
 #include "dlnarenderer.h"
 #include "httpfileserver.h"
-
 #include <QDebug>
 
-Server::Server(QStringList & files, QObject *parent) : QObject(parent), filesList(files)
+Kast::Kast(QStringList & files, QObject *parent) : QObject(parent), filesList(files)
 {
     qDebug() << "Starting server...";
 
@@ -13,7 +12,7 @@ Server::Server(QStringList & files, QObject *parent) : QObject(parent), filesLis
     SSDPdiscovery *test = new SSDPdiscovery(this);
     connect(test, SIGNAL(foundRenderer(DLNARenderer*)), this, SLOT(foundRenderer(DLNARenderer*)));
 }
-void Server::foundRenderer(DLNARenderer *renderer)
+void Kast::foundRenderer(DLNARenderer *renderer)
 {
     qDebug() << "Renderer found: " + renderer->getName();
     // Get local address
@@ -21,11 +20,11 @@ void Server::foundRenderer(DLNARenderer *renderer)
     QString fileName = fileServer->getFilenameFromID(id),
             local_address = getLocalAddress().toString(),
             port_number = QString::number(port);
-
+    // Set playback url, and play it
     renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number, QString::number(id), fileName)));
     renderer->playPlayback();
 }
-QHostAddress Server::getLocalAddress()
+QHostAddress Kast::getLocalAddress()
 {
     // see http://stackoverflow.com/questions/13835989/get-local-ip-address-in-qt
     for(auto && address : QNetworkInterface::allAddresses())

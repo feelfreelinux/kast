@@ -1,18 +1,19 @@
-#ifndef SERVER_H
-#define SERVER_H
+#ifndef KAST_H
+#define KAST_H
 
 #include "dlnarenderer.h"
 #include "httpfileserver.h"
 
 #include <QtNetwork>
 
-const int port = 1337;
+// HTTPServer's port
+const int port = 5437;
 
-class Server : public QObject
+class Kast : public QObject
 {
     Q_OBJECT
 public:
-    Server(QStringList & core, QObject *parent = 0);
+    Kast(QStringList & core, QObject *parent = 0);
     QHostAddress getLocalAddress();
 private:
     HttpFileServer *fileServer;
@@ -20,4 +21,4 @@ private:
 private slots:
     void foundRenderer(DLNARenderer *renderer);
 };
-#endif // SERVER_H
+#endif // KAST_H

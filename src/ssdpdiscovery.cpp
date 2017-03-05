@@ -37,6 +37,7 @@ void SSDPdiscovery::processPendingDatagrams()
 
         for(int i = 0; i<list.size(); ++i)
         {
+            // Get url of ip of renderer, send request to get more data
             if(list[i].startsWith("Location:"))
             {
                 nmgr = new QNetworkAccessManager(this);
@@ -54,8 +55,10 @@ void SSDPdiscovery::processData()
     QXmlStreamReader xml(reply->readAll());
     reply->close();
 
+    // Construct renderer object
     DLNARenderer *renderer = new DLNARenderer(reply->url(), this);
-    // TODO: Add beter error handling here, should be moved to DLNARenderer class constructor
+
+    // Parse return url
     while(!xml.hasError() && !xml.atEnd())
     {
         xml.readNextStartElement();

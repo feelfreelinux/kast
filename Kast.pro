@@ -9,11 +9,11 @@ CONFIG -= app_bundle
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
-    src/server.cpp \
     src/ssdpdiscovery.cpp \
     src/dlnarenderer.cpp \
     src/httpfileserver.cpp \
-    src/soapactionmanager.cpp
+    src/soapactionmanager.cpp \
+    src/kast.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -29,8 +29,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 INCLUDEPATH += include
 
 HEADERS += \
-    include/server.h \
     include/ssdpdiscovery.h \
     include/dlnarenderer.h \
     include/httpfileserver.h \
-    include/soapactionmanager.h
+    include/soapactionmanager.h \
+    include/kast.h

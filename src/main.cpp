@@ -1,5 +1,5 @@
 #include <QCoreApplication>
-#include "server.h"
+#include "kast.h"
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +11,6 @@ int main(int argc, char *argv[])
     QStringList files = app.arguments();
     files.removeFirst();
 
-    Server server(files);
+    Kast kast(files);
     return app.exec();
 }
