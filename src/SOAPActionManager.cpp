@@ -6,7 +6,7 @@ SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)
     mgr = new QNetworkAccessManager(this);
 }
 
-void SOAPActionManager::doAction(QString action, QString actionData, QUrl controlUrl)
+void SOAPActionManager::doAction(const QString & action, const QString & actionData, const QUrl & controlUrl)
 {
     QNetworkRequest request;
 

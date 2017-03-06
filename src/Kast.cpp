@@ -1,7 +1,5 @@
 #include "Kast.h"
 #include "SSDPDiscovery.h"
-#include "DLNARenderer.h"
-#include "HTTPFileServer.h"
 #include <QDebug>
 
 Kast::Kast(QStringList & files, QObject *parent) : QObject(parent), filesList(files)

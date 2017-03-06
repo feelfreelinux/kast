@@ -1,10 +1,8 @@
 #include "HTTPFileServer.h"
 
-#include <QTcpServer>
-#include <QMimeDatabase>
 #include <QFile>
 #include <QFileInfo>
-#include <QTcpSocket>
+#include <QMimeDatabase>
 #include <QUrl>
 #include <QDebug>
 
