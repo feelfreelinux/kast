@@ -1,4 +1,4 @@
-#include "httpfileserver.h"
+#include "HTTPFileServer.h"
 
 #include <QTcpServer>
 #include <QMimeDatabase>

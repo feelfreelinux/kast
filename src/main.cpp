@@ -1,5 +1,5 @@
 #include <QCoreApplication>
-#include "kast.h"
+#include "Kast.h"
 
 int main(int argc, char *argv[])
 {

@@ -1,4 +1,4 @@
-#include "dlnarenderer.h"
+#include "DLNARenderer.h"
 
 #include <QDebug>
 

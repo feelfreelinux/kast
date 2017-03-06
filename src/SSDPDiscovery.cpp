@@ -1,4 +1,4 @@
-#include "ssdpdiscovery.h"
+#include "SSDPDiscovery.h"
 
 // DLNA renderers discovery class
 SSDPdiscovery::SSDPdiscovery(QObject *parent) : QObject(parent)

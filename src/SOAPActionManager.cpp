@@ -1,4 +1,4 @@
-#include "soapactionmanager.h"
+#include "SOAPActionManager.h"
 #include <QDebug>
 
 SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)

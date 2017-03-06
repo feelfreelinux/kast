@@ -1,7 +1,7 @@
 #ifndef DLNARENDERER_H
 #define DLNARENDERER_H
 
-#include "soapactionmanager.h"
+#include "SOAPActionManager.h"
 
 #include <QtNetwork>
 

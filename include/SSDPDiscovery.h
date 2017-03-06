@@ -3,7 +3,7 @@
 
 #include <QObject>
 #include <QtNetwork>
-#include <dlnarenderer.h>
+#include <DLNARenderer.h>
 
 class SSDPdiscovery : public QObject
 {

@@ -1,8 +1,8 @@
 #ifndef KAST_H
 #define KAST_H
 
-#include "dlnarenderer.h"
-#include "httpfileserver.h"
+#include "DLNARenderer.h"
+#include "HTTPFileServer.h"
 
 #include <QtNetwork>
 
