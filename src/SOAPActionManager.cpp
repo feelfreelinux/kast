@@ -12,7 +12,7 @@ void SOAPActionManager::doAction(const QString & action, const QString & actionD
 
     // Build xml request body
     QString data = SOAPXmlHeader + action + SOAPXmlInstanceId + actionData + SOAPXmlActions + action + SOAPXmlFooter;
-    QByteArray actionHeader = QString("urn:schemas-upnp-org:service:AVTransport:1#" + action).toUtf8();
+    QByteArray actionHeader = QString("\"urn:schemas-upnp-org:service:AVTransport:1#" + action + "\"").toUtf8();
 
     // Set needed headers
     request.setUrl(controlUrl);
