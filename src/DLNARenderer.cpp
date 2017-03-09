@@ -1,8 +1,11 @@
 #include "DLNARenderer.h"
+#include "DLNAPlaybackInfo.h"
 
 #include <QDebug>
 
-DLNARenderer::DLNARenderer(QUrl url, QObject *parent) : QObject(parent), sam(new SOAPActionManager()), serverUrl(url) { }
+DLNARenderer::DLNARenderer(QUrl url, QObject *parent) : QObject(parent), sam(new SOAPActionManager()), serverUrl(url) {
+    connect(sam, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)), this, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)));
+}
 
 QString DLNARenderer::getControlUrl() { return controlUrl; }
 QString DLNARenderer::getName() { return serverName; }
@@ -31,6 +34,11 @@ void DLNARenderer::setNextPlaybackUrl(const QUrl & url)
                 "SetNextAVTransportURI", // Action
                 "<NextURI>"+url.toString()+"</NextURI><NextURIMetaData></NextURIMetaData>",  // Action Data
                 fullcontrolUrl); // Control url
+}
+
+void DLNARenderer::queryPlaybackInfo()
+{
+    sam->doAction("GetPositionInfo", "", fullcontrolUrl);
 }
 
 void DLNARenderer::playPlayback()

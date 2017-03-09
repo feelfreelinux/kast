@@ -3,6 +3,7 @@
 
 #include "DLNARenderer.h"
 #include "HTTPFileServer.h"
+#include "DLNAPlaybackInfo.h"
 
 #include <QtNetwork>
 
@@ -19,6 +20,7 @@ private:
     HttpFileServer *fileServer;
     QStringList filesList;
 private slots:
-    void foundRenderer(DLNARenderer *renderer);
+    void foundRenderer(DLNARenderer*);
+    void receivePlaybackInfo(DLNAPlaybackInfo*);
 };
 #endif // KAST_H

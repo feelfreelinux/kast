@@ -2,6 +2,7 @@
 #define DLNARENDERER_H
 
 #include "SOAPActionManager.h"
+#include "DLNAPlaybackInfo.h"
 
 #include <QtNetwork>
 
@@ -25,10 +26,13 @@ public:
     void nextPlayback();
     void previousPlayback();
     void seekPlayback(QTime time);
+    void queryPlaybackInfo();
 private:
     SOAPActionManager *sam;
     QUrl serverUrl, fullcontrolUrl;
     QString serverName, controlUrl;
+signals:
+    void receivePlaybackInfo(DLNAPlaybackInfo*);
 };
 
 #endif // DLNARENDERER_H

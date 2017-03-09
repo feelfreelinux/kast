@@ -1,8 +1,10 @@
 #include "HTTPFileServer.h"
 
+#include <QTcpServer>
+#include <QMimeDatabase>
 #include <QFile>
 #include <QFileInfo>
-#include <QMimeDatabase>
+#include <QTcpSocket>
 #include <QUrl>
 #include <QDebug>
 
@@ -33,17 +35,17 @@ void HttpFileServer::handleIncoming()
     while(!clientConnection->atEnd())
     {
             QString line = clientConnection->readLine();
-            
+
             // Get filename from request
             if(line.startsWith("GET /"))
             {
                 line.replace("GET /", ""); // HTTP header left part
                 line.chop(11); // HTTP header right part
-                
+
                 int id = line.left(line.lastIndexOf("/")).toInt();
                 QString fileName = line.right(line.length() - line.lastIndexOf("/") - 1);
                 filePath = fileMap[id];
-                
+
                 // Ensures the file is valid
                 fileinfo.setFile(filePath.toString());
                 if(fileinfo.suffix() != line.split(".").last() ||
@@ -66,7 +68,7 @@ void HttpFileServer::handleIncoming()
             line.replace("\r\n", "");
             QString key(line.left(line.indexOf(":"))),
                     value(line.mid(line.indexOf(":") + 2, line.length()));
-                    
+
             requestMap.insert(key, value);
     }
     // If no error occured, send and process file

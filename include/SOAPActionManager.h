@@ -1,5 +1,6 @@
-#ifndef SOAPACTION_H
-#define SOAPACTION_H
+#ifndef SOAPACTIONMANAGER_H
+#define SOAPACTIONMANAGER_H
+#include "DLNAPlaybackInfo.h"
 #include <QObject>
 #include <QtNetwork>
 
@@ -16,10 +17,13 @@ class SOAPActionManager : public QObject
 public:
     explicit SOAPActionManager(QObject *parent = 0);
     void doAction(const QString & action, const QString & actionData, const QUrl & controlUrl);
+signals:
+    void receivePlaybackInfo(DLNAPlaybackInfo*);
 private:
     QNetworkAccessManager *mgr;
 private slots:
     void processData(QNetworkReply* reply);
+    void processPlaybackInfo(QNetworkReply* reply);
 };
 
-#endif // SOAPACTION_H
+#endif // SOAPACTIONMANAGER_H
