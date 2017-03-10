@@ -13,7 +13,8 @@ SOURCES += src/main.cpp \
     src/HTTPFileServer.cpp \
     src/Kast.cpp \
     src/SOAPActionManager.cpp \
-    src/SSDPDiscovery.cpp
+    src/SSDPDiscovery.cpp \
+    src/DLNAPlaybackInfo.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -33,4 +34,5 @@ HEADERS += \
     include/HTTPFileServer.h \
     include/SSDPDiscovery.h \
     include/SOAPActionManager.h \
-    include/Kast.h
+    include/Kast.h \
+    include/DLNAPlaybackInfo.h

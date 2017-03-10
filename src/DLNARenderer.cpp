@@ -44,6 +44,11 @@ void DLNARenderer::queryPlaybackInfo()
     sam->doAction("GetPositionInfo", QMap<QString, QString>(), fullcontrolUrl);
 }
 
+void DLNARenderer::queryPlaybackInfo()
+{
+    sam->doAction("GetPositionInfo", "", fullcontrolUrl);
+}
+
 void DLNARenderer::playPlayback()
 {
     QMap<QString, QString> dataMap;
