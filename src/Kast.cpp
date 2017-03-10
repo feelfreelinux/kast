@@ -35,7 +35,7 @@ void Kast::foundRenderer(DLNARenderer *renderer)
 
 void Kast::receivePlaybackInfo(DLNAPlaybackInfo *playbackInfo)
 {
-    qDebug() << playbackInfo->getRelTime().toString();
+    qDebug() << playbackInfo->relTime.toString();
 }
 
 QHostAddress Kast::getLocalAddress()

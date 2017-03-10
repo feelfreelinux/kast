@@ -2,15 +2,8 @@
 #define DLNAPLAYBACKINFO_H
 #include <QTime>
 
-class DLNAPlaybackInfo
+struct DLNAPlaybackInfo
 {
-public:
-    DLNAPlaybackInfo();
-    void setRelTime(QTime time);
-    void setTrackDuration(QTime time);
-    QTime getRelTime();
-    QTime getTrackDuration();
-private:
     QTime relTime, trackDuration;
 };
 

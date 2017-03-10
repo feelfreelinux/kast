@@ -58,9 +58,9 @@ void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
     {
         xml.readNextStartElement();
         if(xml.name() == "RelTime")
-            playbackInfo.setRelTime(QTime::fromString(xml.readElementText(), "hh:mm:ss"));
-        else if (xml.name() == "TrackDuration")
-            playbackInfo.setTrackDuration(QTime::fromString(xml.readElementText(), "hh:mm:ss"));
+            playbackInfo.relTime = QTime::fromString(xml.readElementText(), "hh:mm:ss");
+        else if(xml.name() == "TrackDuration")
+            playbackInfo.trackDuration = QTime::fromString(xml.readElementText(), "hh:mm:ss");
     }
 
     emit receivePlaybackInfo(&playbackInfo);
