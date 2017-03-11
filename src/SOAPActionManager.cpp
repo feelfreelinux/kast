@@ -11,9 +11,19 @@ SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)
     mgr = new QNetworkAccessManager(this);
 }
 
-void SOAPActionManager::doAction(const QString & action, const QString & actionData, const QUrl & controlUrl)
+void SOAPActionManager::doAction(const QString &action, const QMap<QString, QString> &dataMap, const QUrl &controlUrl)
 {
     QNetworkRequest request;
+
+    // Build xml data string
+    QString actionData = "";
+    if (!dataMap.isEmpty() || !dataMap.isDetached()) {
+        for (const QString &key : dataMap.keys()) {
+            actionData.append("<" + key + ">");
+            actionData.append(dataMap.value(key));
+            actionData.append("</" + key + ">");
+        }
+    }
 
     // Build xml request body
     QString data = SOAPXmlHeader + action + SOAPXmlInstanceId + actionData + SOAPXmlActions + action + SOAPXmlFooter;
