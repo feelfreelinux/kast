@@ -16,7 +16,7 @@ class SOAPActionManager : public QObject
     Q_OBJECT
 public:
     explicit SOAPActionManager(QObject *parent = 0);
-    void doAction(const QString & action, const QString & actionData, const QUrl & controlUrl);
+    void doAction(const QString &action, const QMap<QString, QString> &dataMap, const QUrl &controlUrl);
 signals:
     void receivePlaybackInfo(DLNAPlaybackInfo*);
 private:
