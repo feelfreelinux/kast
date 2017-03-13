@@ -21,6 +21,5 @@ private:
     QStringList filesList;
 private slots:
     void foundRenderer(DLNARenderer*);
-    void receivePlaybackInfo(DLNAPlaybackInfo*);
 };
 #endif // KAST_H

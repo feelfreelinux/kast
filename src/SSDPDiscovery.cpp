@@ -3,6 +3,14 @@
 // DLNA renderers discovery class
 SSDPdiscovery::SSDPdiscovery(QObject *parent) : QObject(parent)
 {
+    // Create network manager, for quering info of renderers, and connect signal
+    nmgr = new QNetworkAccessManager(this);
+    connect(nmgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processData(QNetworkReply*)));
+}
+
+// Starts SSDP discovery. Dont call it, when you have IP adress specified, just procced to ->findRendererFromUrl
+void SSDPdiscovery::begin()
+{
     // DLNA discovery adress
     QHostAddress groupAddress = QHostAddress("239.255.255.250");
 
@@ -40,17 +48,20 @@ void SSDPdiscovery::processPendingDatagrams()
             // Get url of ip of renderer, send request to get more data
             if(list[i].startsWith("Location:"))
             {
-                nmgr = new QNetworkAccessManager(this);
-                reply = nmgr->get(QNetworkRequest(list[i].mid(10).simplified()));
-                connect(reply, SIGNAL(finished()), this, SLOT(processData()));
-                break;
+                findRendererFromUrl(QUrl(list[i].mid(10).simplified()));
             }
         }
     }
 }
 
+void SSDPdiscovery::findRendererFromUrl(const QUrl &url)
+{
+    // Query renderer info
+    nmgr->get(QNetworkRequest(url));
+}
+
 // This function process request data, into DLNA Server
-void SSDPdiscovery::processData()
+void SSDPdiscovery::processData(QNetworkReply *reply)
 {
     QXmlStreamReader xml(reply->readAll());
     reply->close();

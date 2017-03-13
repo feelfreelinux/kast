@@ -10,12 +10,13 @@ class SSDPdiscovery : public QObject
     Q_OBJECT
 public:
     explicit SSDPdiscovery(QObject *parent = 0);
+    void findRendererFromUrl(const QUrl &url);
+    void begin();
 private slots:
-    void processData();
+    void processData(QNetworkReply*);
     void processPendingDatagrams();
 private:
     QNetworkAccessManager *nmgr;
-    QNetworkReply *reply;
     QUdpSocket *udpSocket;
     QHostAddress groupAddress;
 signals:

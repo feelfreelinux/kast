@@ -2,12 +2,7 @@
 #include "SSDPDiscovery.h"
 #include "DLNAPlaybackInfo.h"
 #include <QDebug>
-void delay()
-{
-    QTime dieTime= QTime::currentTime().addSecs(1);
-    while (QTime::currentTime() < dieTime)
-        QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-}
+
 Kast::Kast(QStringList & files, QObject *parent) : QObject(parent), filesList(files)
 {
     qDebug() << "Starting server...";
@@ -15,6 +10,8 @@ Kast::Kast(QStringList & files, QObject *parent) : QObject(parent), filesList(fi
     fileServer = new HttpFileServer(port, QHostAddress::Any, this);
     SSDPdiscovery *test = new SSDPdiscovery(this);
     connect(test, SIGNAL(foundRenderer(DLNARenderer*)), this, SLOT(foundRenderer(DLNARenderer*)));
+    // Start SSDP discovery
+    test->begin();
 }
 
 void Kast::foundRenderer(DLNARenderer *renderer)
@@ -28,14 +25,6 @@ void Kast::foundRenderer(DLNARenderer *renderer)
     // Set playback url, and play it
     renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number, QString::number(id), fileName)));
     renderer->playPlayback();
-    delay();delay();delay();
-    connect(renderer, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)), this, SLOT(receivePlaybackInfo(DLNAPlaybackInfo*)));
-    renderer->queryPlaybackInfo();
-}
-
-void Kast::receivePlaybackInfo(DLNAPlaybackInfo *playbackInfo)
-{
-    qDebug() << playbackInfo->relTime.toString();
 }
 
 QHostAddress Kast::getLocalAddress()
