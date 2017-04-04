@@ -34,4 +34,5 @@ HEADERS += \
     include/SSDPDiscovery.h \
     include/SOAPActionManager.h \
     include/Kast.h \
-    include/DLNAPlaybackInfo.h
+    include/DLNAPlaybackInfo.h \
+    include/DLNARendererIcon.h

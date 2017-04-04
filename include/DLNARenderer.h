@@ -3,6 +3,7 @@
 
 #include "SOAPActionManager.h"
 #include "DLNAPlaybackInfo.h"
+#include "DLNARendererIcon.h"
 
 #include <QtNetwork>
 
@@ -15,6 +16,7 @@ public:
     QUrl getUrl();
     QString getControlUrl();
     QString getName();
+    DLNARendererIcon icon;
     
     void setName(const QString & name);
     void setControlUrl(const QString & name);

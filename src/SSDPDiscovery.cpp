@@ -82,6 +82,21 @@ void SSDPdiscovery::processData(QNetworkReply *reply)
         }
         else if(xml.name()=="friendlyName")
             renderer->setName(xml.readElementText());
+        // Parse icon list
+        else if(xml.name()=="icon" && !xml.isEndElement())
+        {
+            xml.readNextStartElement();
+            DLNARendererIcon icon;
+            while(!(xml.name()=="icon")){
+                if(xml.name()=="mimetype") icon.mimetype = xml.readElementText();
+                else if(xml.name()=="width") icon.width = xml.readElementText().toInt();
+                else if(xml.name()=="height") icon.height = xml.readElementText().toInt();
+                else if(xml.name()=="url") icon.url = xml.readElementText();
+                xml.readNextStartElement();
+            }
+            // Choose the largest icon
+            if(renderer->icon.width<icon.width) renderer->icon = icon;
+        }
     }
     emit foundRenderer(renderer);
 }
