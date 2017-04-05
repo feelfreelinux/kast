@@ -47,9 +47,11 @@ void HttpFileServer::handleIncoming()
                 line.chop(11); // HTTP header right part
 
                 int id = line.left(line.lastIndexOf("/")).toInt();
-                QString fileName = line.right(line.length() - line.lastIndexOf("/") - 1);
+                // Get filename from request, url-decode it
+                QString fileName = line.right(line.length() - line.lastIndexOf("/") - 1).replace("%20", " ");
                 filePath = fileMap[id];
                 // Ensures the file is valid
+                qDebug() << filePath.toString();
                 fileinfo.setFile(filePath.toString());
                 if(fileinfo.suffix() != line.split(".").last() ||
                         fileinfo.fileName() != fileName ||

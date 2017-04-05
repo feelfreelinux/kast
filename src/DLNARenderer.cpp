@@ -23,7 +23,8 @@ void DLNARenderer::setControlUrl(const QString & url)
 void DLNARenderer::setPlaybackUrl(const QUrl & url)
 {
     QMap<QString, QString> dataMap;
-    dataMap.insert("CurrentURI", "<![CDATA["+url.toString()+"]]>");
+    // Add URI to request, URL-encode it
+    dataMap.insert("CurrentURI", "<![CDATA["+url.toString().replace(" ", "%20")+"]]>");
     dataMap.insert("CurrentURIMetaData", "");
     sam->doAction(
                 "SetAVTransportURI", // Action
@@ -34,7 +35,8 @@ void DLNARenderer::setPlaybackUrl(const QUrl & url)
 void DLNARenderer::setNextPlaybackUrl(const QUrl & url)
 {
     QMap<QString, QString> dataMap;
-    dataMap.insert("NextURI", url.toString());
+    // Add URI to request, URL-encode it
+    dataMap.insert("NextURI", url.toString().replace(" ", "%20"));
     dataMap.insert("NextURIMetaData", "");
     sam->doAction("SetNextAVTransportURI", dataMap, fullcontrolUrl);
 }
