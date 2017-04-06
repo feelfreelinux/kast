@@ -24,7 +24,8 @@ void DLNARenderer::setPlaybackUrl(const QUrl & url)
 {
     QMap<QString, QString> dataMap;
     // Add URI to request, URL-encode it
-    dataMap.insert("CurrentURI", "<![CDATA["+url.toString().replace(" ", "%20")+"]]>");
+    QString urlString = url.toString().replace(url.fileName(), QString(QUrl::toPercentEncoding(url.fileName())));
+    dataMap.insert("CurrentURI", "<![CDATA["+urlString+"]]>");
     dataMap.insert("CurrentURIMetaData", "");
     sam->doAction(
                 "SetAVTransportURI", // Action
@@ -36,7 +37,8 @@ void DLNARenderer::setNextPlaybackUrl(const QUrl & url)
 {
     QMap<QString, QString> dataMap;
     // Add URI to request, URL-encode it
-    dataMap.insert("NextURI", url.toString().replace(" ", "%20"));
+    QString urlString = url.toString().replace(url.fileName(), QString(QUrl::toPercentEncoding(url.fileName())));
+    dataMap.insert("NextURI", urlString);
     dataMap.insert("NextURIMetaData", "");
     sam->doAction("SetNextAVTransportURI", dataMap, fullcontrolUrl);
 }

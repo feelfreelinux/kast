@@ -48,7 +48,7 @@ void HttpFileServer::handleIncoming()
 
                 int id = line.left(line.lastIndexOf("/")).toInt();
                 // Get filename from request, url-decode it
-                QString fileName = line.right(line.length() - line.lastIndexOf("/") - 1).replace("%20", " ");
+                QString fileName(QUrl::fromPercentEncoding(line.right(line.length() - line.lastIndexOf("/") - 1).toUtf8()));
                 filePath = fileMap[id];
                 // Ensures the file is valid
                 qDebug() << filePath.toString();
