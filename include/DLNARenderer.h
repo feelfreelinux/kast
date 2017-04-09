@@ -24,6 +24,7 @@ public:
     void setPlaybackUrl(const QUrl & url);
     void setNextPlaybackUrl(const QUrl & url);
     void playPlayback();
+    void stopPlayback();
     void pausePlayback();
     void nextPlayback();
     void previousPlayback();

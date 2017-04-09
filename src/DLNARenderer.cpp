@@ -60,6 +60,11 @@ void DLNARenderer::pausePlayback()
     sam->doAction("Pause", QMap<QString, QString>(), fullcontrolUrl);
 }
 
+void DLNARenderer::stopPlayback()
+{
+    sam->doAction("Stop", QMap<QString, QString>(), fullcontrolUrl);
+}
+
 void DLNARenderer::previousPlayback()
 {
     sam->doAction("Previous", QMap<QString, QString>(), fullcontrolUrl);
