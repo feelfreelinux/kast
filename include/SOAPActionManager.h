@@ -5,7 +5,8 @@
 #include <QtNetwork>
 
 // Xml request's body
-const QString SOAPXmlHeader = "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "
+const QString SOAPXmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>"
+                              "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "
                               "xmlns:s=\"http://schemas.xmlsoap.org/soap/envelope/\"><s:Body><u:",
               SOAPXmlInstanceId = " xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID>",
               SOAPXmlActions = "</u:",
