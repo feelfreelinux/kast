@@ -24,7 +24,7 @@ void Kast::foundRenderer(DLNARenderer *renderer)
             port_number = QString::number(port);
     // Set playback url, and play it
     renderer->stopPlayback();
-    renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number, QString::number(id), fileName)));
+    renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number, QString::number(id), fileName)), QFileInfo(filesList[0]));
     renderer->playPlayback();
 }
 

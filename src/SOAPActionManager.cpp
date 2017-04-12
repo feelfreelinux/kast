@@ -76,3 +76,11 @@ void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
     // We want to be able to connect it to few slots, so lets disconnect it for now
     disconnect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processPlaybackInfo(QNetworkReply*)));
 }
+
+// Generates DIDL-Lite metadata
+QString SOAPActionManager::generateDIDLLite(const QFileInfo &fileInfo, const QString &address)
+{
+    QMimeDatabase db;
+    QString mimetype = db.mimeTypeForFile(fileInfo).name();
+    return DIDLLiteString.arg(fileInfo.fileName(), fileInfo.owner(), mimetype.split("/").first(), mimetype, address);
+}

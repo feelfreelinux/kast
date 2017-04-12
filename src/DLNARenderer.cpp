@@ -20,13 +20,13 @@ void DLNARenderer::setControlUrl(const QString & url)
     fullcontrolUrl.setPath(url);
 }
 
-void DLNARenderer::setPlaybackUrl(const QUrl & url)
+void DLNARenderer::setPlaybackUrl(const QUrl & url, const QFileInfo &fileInfo)
 {
     QMap<QString, QString> dataMap;
     // Add URI to request, URL-encode it
     QString urlString = url.toString().replace(url.fileName(), QString(QUrl::toPercentEncoding(url.fileName())));
     dataMap.insert("CurrentURI", urlString);
-    dataMap.insert("CurrentURIMetaData", "");
+    dataMap.insert("CurrentURIMetaData", sam->generateDIDLLite(fileInfo, urlString));
     sam->doAction(
                 "SetAVTransportURI", // Action
                 dataMap,  // Action Data

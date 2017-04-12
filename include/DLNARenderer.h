@@ -21,7 +21,7 @@ public:
     void setName(const QString & name);
     void setControlUrl(const QString & name);
     // DLNA functions
-    void setPlaybackUrl(const QUrl & url);
+    void setPlaybackUrl(const QUrl & url, const QFileInfo & fileInfo);
     void setNextPlaybackUrl(const QUrl & url);
     void playPlayback();
     void stopPlayback();
