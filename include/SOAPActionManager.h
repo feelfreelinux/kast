@@ -11,15 +11,15 @@ const QString SOAPXmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\" standalo
               SOAPXmlInstanceId = " xmlns:u=\"urn:schemas-upnp-org:service:AVTransport:1\"><InstanceID>0</InstanceID>",
               SOAPXmlActions = "</u:",
               SOAPXmlFooter = "></s:Body></s:Envelope>",
-              DIDLLiteString = "<DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\""
+              DIDLLiteString = "&lt;DIDL-Lite xmlns=\"urn:schemas-upnp-org:metadata-1-0/DIDL-Lite/\""
                                " xmlns:upnp=\"urn:schemas-upnp-org:metadata-1-0/upnp/\""
                                " xmlns:dc=\"http://purl.org/dc/elements/1.1/\""
-                               " xmlns:sec=\"http://www.sec.co.kr/\"><item id=\"f-0\" parentID=\"0\" restricted=\"0\">"
-                               "<dc:title>%1</dc:title>"
-                               "<dc:creator>%2</dc:creator>"
-                               "<upnp:class>object.item.%3Item</upnp:class>"
-                               "<res protocolInfo=\"http-get:*:%4:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000\" >"
-                               "%5</res></item></DIDL-Lite>";
+                               " xmlns:sec=\"http://www.sec.co.kr/\"&gt;&lt;item id=\"f-0\" parentID=\"0\" restricted=\"0\"&gt;"
+                               "&lt;dc:title&gt;%1&lt;/dc:title&gt;"
+                               "&lt;dc:creator&gt;%2&lt;/dc:creator&gt;"
+                               "&lt;upnp:class&gt;object.item.%3Item&lt;/upnp:class&gt;"
+                               "&lt;res protocolInfo=\"http-get:*:%4:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000\" &gt;"
+                               "%5&lt;/res&gt;&lt;/item&gt;&lt;/DIDL-Lite&gt;";
 
 class SOAPActionManager : public QObject
 {

@@ -34,6 +34,7 @@ void SSDPdiscovery::begin()
 // Process received datagrams, and get IP of DLNA DMR
 void SSDPdiscovery::processPendingDatagrams()
 {
+
     while(udpSocket->hasPendingDatagrams())
     {
         QByteArray datagram;
@@ -41,12 +42,13 @@ void SSDPdiscovery::processPendingDatagrams()
         udpSocket->readDatagram(datagram.data(), datagram.size());
 
         QString data = datagram.data();
-        QStringList list = data.split("\n");
+        qDebug() << data;
+        QStringList list = data.split("\r\n");
 
         for(int i = 0; i<list.size(); ++i)
         {
             // Get url of ip of renderer, send request to get more data
-            if(list[i].startsWith("Location:"))
+            if(list[i].toLower().startsWith("location:"))
             {
                 findRendererFromUrl(QUrl(list[i].mid(10).simplified()));
             }

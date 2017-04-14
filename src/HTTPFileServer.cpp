@@ -88,7 +88,7 @@ void HttpFileServer::handleIncoming()
             if(requestMap.contains("Range") && requestType=="GET")
             {
                 // Parse request, get seek value
-                QString range = requestMap["Range"];
+                QString range = requestMap["RanfilesList[0]ge"];
                 range = range.mid(6, range.length()); // 'bytes=' is 6 chars
                 qint64 seek = range.left(range.indexOf("-")).toInt();
                 // Check, is requested filesize acceptable

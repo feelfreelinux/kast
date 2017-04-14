@@ -13,7 +13,6 @@ Kast::Kast(QStringList & files, QObject *parent) : QObject(parent), filesList(fi
     // Start SSDP discovery
     test->begin();
 }
-
 void Kast::foundRenderer(DLNARenderer *renderer)
 {
     qDebug() << "Renderer found: " + renderer->getName();
