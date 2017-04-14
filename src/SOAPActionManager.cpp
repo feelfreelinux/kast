@@ -77,9 +77,12 @@ void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
 }
 
 // Generates DIDL-Lite metadata
-QString SOAPActionManager::generateDIDLLite(const QFileInfo &fileInfo, const QString &address)
+QString SOAPActionManager::generateMetadata(const QFileInfo &fileInfo, const QString &address)
 {
+    // Get mime-type of file
     QMimeDatabase db;
     QString mimetype = db.mimeTypeForFile(fileInfo).name();
+
+    // Construct DIDL-Lite
     return DIDLLiteString.arg(fileInfo.fileName(), fileInfo.owner(), mimetype.split("/").first(), mimetype, address);
 }

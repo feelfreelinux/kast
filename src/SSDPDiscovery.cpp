@@ -42,7 +42,6 @@ void SSDPdiscovery::processPendingDatagrams()
         udpSocket->readDatagram(datagram.data(), datagram.size());
 
         QString data = datagram.data();
-        qDebug() << data;
         QStringList list = data.split("\r\n");
 
         for(int i = 0; i<list.size(); ++i)
@@ -51,6 +50,7 @@ void SSDPdiscovery::processPendingDatagrams()
             if(list[i].toLower().startsWith("location:"))
             {
                 findRendererFromUrl(QUrl(list[i].mid(10).simplified()));
+                return; // Return, we found Location URL
             }
         }
     }
@@ -62,7 +62,7 @@ void SSDPdiscovery::findRendererFromUrl(const QUrl &url)
     nmgr->get(QNetworkRequest(url));
 }
 
-// This function process request data, into DLNA Server
+// This function process request data, into DLNA Renderer
 void SSDPdiscovery::processData(QNetworkReply *reply)
 {
     QXmlStreamReader xml(reply->readAll());

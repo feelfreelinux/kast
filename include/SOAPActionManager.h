@@ -27,7 +27,7 @@ class SOAPActionManager : public QObject
 public:
     explicit SOAPActionManager(QObject *parent = 0);
     void doAction(const QString &action, const QMap<QString, QString> &dataMap, const QUrl &controlUrl);
-    QString generateDIDLLite(const QFileInfo &fileInfo, const QString & address);
+    QString generateMetadata(const QFileInfo &fileInfo, const QString & address);
 signals:
     void receivePlaybackInfo(DLNAPlaybackInfo*);
 private:
