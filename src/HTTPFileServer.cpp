@@ -1,4 +1,5 @@
 #include "HTTPFileServer.h"
+#include "MimeGuesser.h"
 
 #include <QTcpServer>
 #include <QMimeDatabase>
@@ -8,9 +9,8 @@
 #include <QUrl>
 #include <QDebug>
 
-HttpFileServer::HttpFileServer(int port, QHostAddress address, QObject *parent) : QObject(parent)
+HttpFileServer::HttpFileServer(QHostAddress address, int port, QObject *parent) : QObject(parent)
 {
-    // Construct QTcpServer, connect slot
     server = new QTcpServer(this);
     connect(server, SIGNAL(newConnection()), this, SLOT(handleIncoming()));
     server->listen(address, port);
@@ -20,7 +20,7 @@ HttpFileServer::HttpFileServer(int port, QHostAddress address, QObject *parent) 
 // Handles incoming connection
 void HttpFileServer::handleIncoming()
 {
-    QMimeDatabase db;
+    MimeGuesser mg;
     QFileInfo fileinfo;
 
     QTcpSocket *clientConnection = server->nextPendingConnection();
@@ -49,7 +49,7 @@ void HttpFileServer::handleIncoming()
                 int id = line.left(line.lastIndexOf("/")).toInt();
                 // Get filename from request, url-decode it
                 QString fileName(QUrl::fromPercentEncoding(line.right(line.length() - line.lastIndexOf("/") - 1).toUtf8()));
-                filePath = fileMap[id];
+                filePath = sharedFiles[id];
                 // Ensures the file is valid
                 qDebug() << filePath.toString();
                 fileinfo.setFile(filePath.toString());
@@ -88,7 +88,7 @@ void HttpFileServer::handleIncoming()
             if(requestMap.contains("Range") && requestType=="GET")
             {
                 // Parse request, get seek value
-                QString range = requestMap["RanfilesList[0]ge"];
+                QString range = requestMap["Range"];
                 range = range.mid(6, range.length()); // 'bytes=' is 6 chars
                 qint64 seek = range.left(range.indexOf("-")).toInt();
                 // Check, is requested filesize acceptable
@@ -100,16 +100,18 @@ void HttpFileServer::handleIncoming()
                             "Content-Length: %1\r\n"
                             "Content-Range: bytes %2/%1\r\n"
                             "Content-Type: %3\r\n\r\n").arg(filesize, range,
-                                                            db.mimeTypeForFile(fileinfo).name());
+                                                            mg.fileMimeType(fileinfo));
                     // Finally, seek the file
                     file.seek(seek);
-                } else { // Handle 416 Range Not Satisfiable
+                } else
+                {
+                    // Handle 416 Range Not Satisfiable
                     requestType = "FOOBAR"; // Break data sending
                     // Construct 416
                     header = QString("HTTP/1.0 416 Range Not Satisfiable\r\n"
                              "Content-Length: %1\r\n"
                              "Content-Type: %2\r\n\r\n").arg(filesize,
-                                                             db.mimeTypeForFile(fileinfo).name());
+                                                             mg.fileMimeType(fileinfo));
                 }
             }
             else
@@ -117,12 +119,13 @@ void HttpFileServer::handleIncoming()
                 header = QString("HTTP/1.0 200 OK\r\n"
                          "Content-Length: %1\r\n"
                          "Content-Type: %2\r\n\r\n").arg(filesize,
-                                                         db.mimeTypeForFile(fileinfo).name());
+                                                         mg.fileMimeType(fileinfo));
             // Write header to client
             clientConnection->write(header.toUtf8());
             clientConnection->waitForBytesWritten();
             // If type is GET, send data of file.
-            if(requestType=="GET") {
+            if(requestType=="GET")
+            {
                 QByteArray block; block.resize(65536);
                     while(!file.atEnd())
                     {
@@ -143,11 +146,11 @@ void HttpFileServer::handleIncoming()
 
 int HttpFileServer::serveFile(const QUrl & path)
 {
-    fileMap.insert(fileMap.count(), path);
-    return fileMap.count() - 1;
+    sharedFiles.insert(sharedFiles.count(), path);
+    return sharedFiles.count() - 1;
 }
 
-QString HttpFileServer::getFilenameFromID(int id)
+QString HttpFileServer::getFilenameFromID(const int id)
 {
-    return QUrl(fileMap[id]).fileName();
+    return QUrl(sharedFiles[id]).fileName();
 }

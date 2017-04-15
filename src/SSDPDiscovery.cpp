@@ -9,7 +9,7 @@ SSDPdiscovery::SSDPdiscovery(QObject *parent) : QObject(parent)
 }
 
 // Starts SSDP discovery. Dont call it, when you have IP adress specified, just procced to ->findRendererFromUrl
-void SSDPdiscovery::begin()
+void SSDPdiscovery::run()
 {
     // DLNA discovery adress
     QHostAddress groupAddress = QHostAddress("239.255.255.250");
@@ -34,29 +34,24 @@ void SSDPdiscovery::begin()
 // Process received datagrams, and get IP of DLNA DMR
 void SSDPdiscovery::processPendingDatagrams()
 {
-
     while(udpSocket->hasPendingDatagrams())
     {
-        QByteArray datagram;
-        datagram.resize(udpSocket->pendingDatagramSize());
-        udpSocket->readDatagram(datagram.data(), datagram.size());
+        QNetworkDatagram datagram = udpSocket->receiveDatagram();
+        QStringList list = QString(datagram.data()).split("\r\n");
 
-        QString data = datagram.data();
-        QStringList list = data.split("\r\n");
-
-        for(int i = 0; i<list.size(); ++i)
+        for(auto i : list)
         {
             // Get url of ip of renderer, send request to get more data
-            if(list[i].toLower().startsWith("location:"))
+            if(i.toLower().startsWith("location:"))
             {
-                findRendererFromUrl(QUrl(list[i].mid(10).simplified()));
-                return; // Return, we found Location URL
+                findRendererFromUrl(QUrl(i.mid(10).simplified()));
+                break;
             }
         }
     }
 }
 
-void SSDPdiscovery::findRendererFromUrl(const QUrl &url)
+void SSDPdiscovery::findRendererFromUrl(const QUrl & url)
 {
     // Query renderer info
     nmgr->get(QNetworkRequest(url));
@@ -66,39 +61,49 @@ void SSDPdiscovery::findRendererFromUrl(const QUrl &url)
 void SSDPdiscovery::processData(QNetworkReply *reply)
 {
     QXmlStreamReader xml(reply->readAll());
-    reply->close();
 
-    // Construct renderer object
-    DLNARenderer *renderer = new DLNARenderer(reply->url(), this);
-
-    // Parse return url
-    while(!xml.hasError() && !xml.atEnd())
+    if(!known_urls.contains(reply->url().toString()))
     {
-        xml.readNextStartElement();
-        if(xml.name()=="serviceId" && xml.readElementText()=="urn:upnp-org:serviceId:AVTransport")
-        {
-            while(!(xml.name()=="controlURL") && !xml.atEnd())
-                xml.readNextStartElement();
-            if(xml.name()=="controlURL")
-                renderer->setControlUrl(xml.readElementText());
-        }
-        else if(xml.name()=="friendlyName")
-            renderer->setName(xml.readElementText());
-        // Parse icon list
-        else if(xml.name()=="icon" && !xml.isEndElement())
+        // Construct renderer object
+        DLNARenderer *renderer = new DLNARenderer(reply->url(), this);
+
+        reply->close();
+
+        // Parse return url
+        while(!xml.hasError() && !xml.atEnd())
         {
             xml.readNextStartElement();
-            DLNARendererIcon icon;
-            while(!(xml.name()=="icon")){
-                if(xml.name()=="mimetype") icon.mimetype = xml.readElementText();
-                else if(xml.name()=="width") icon.width = xml.readElementText().toInt();
-                else if(xml.name()=="height") icon.height = xml.readElementText().toInt();
-                else if(xml.name()=="url") icon.url = xml.readElementText();
-                xml.readNextStartElement();
+            if(xml.name()=="serviceId" && xml.readElementText()=="urn:upnp-org:serviceId:AVTransport")
+            {
+                while(xml.name()!="controlURL" && !xml.atEnd())
+                    xml.readNextStartElement();
+                if(xml.name()=="controlURL")
+                    renderer->setControlUrl(xml.readElementText());
             }
-            // Choose the largest icon
-            if(renderer->icon.width<icon.width) renderer->icon = icon;
+            else if(xml.name()=="friendlyName")
+                renderer->setName(xml.readElementText());
+            // Parse icon list
+            else if(xml.name()=="icon" && !xml.isEndElement())
+            {
+                xml.readNextStartElement();
+                DLNARendererIcon icon;
+                while(xml.name()!="icon")
+                {
+                    if(xml.name()=="mimetype") icon.mimetype = xml.readElementText();
+                    else if(xml.name()=="width") icon.width = xml.readElementText().toInt();
+                    else if(xml.name()=="height") icon.height = xml.readElementText().toInt();
+                    else if(xml.name()=="url") icon.url = xml.readElementText();
+                    xml.readNextStartElement();
+                }
+                // Choose the largest icon
+                if(renderer->icon.width < icon.width) renderer->icon = icon;
+            }
         }
+
+        known_urls.insert(renderer->getUrl().toString());
+        known_renderers.append(renderer);
+        emit foundRenderer(renderer);
     }
-    emit foundRenderer(renderer);
+    else
+        reply->close();
 }

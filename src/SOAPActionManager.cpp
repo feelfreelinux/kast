@@ -1,10 +1,8 @@
 #include "SOAPActionManager.h"
 #include "DLNAPlaybackInfo.h"
+#include "MimeGuesser.h"
 #include <QDebug>
 
-/**
- * This class handles network requests from DLNARenderer.
- */
 
 SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)
 {
@@ -79,10 +77,8 @@ void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
 // Generates DIDL-Lite metadata
 QString SOAPActionManager::generateMetadata(const QFileInfo &fileInfo, const QString &address)
 {
-    // Get mime-type of file
-    QMimeDatabase db;
-    QString mimetype = db.mimeTypeForFile(fileInfo).name();
-
+    MimeGuesser mg;
     // Construct DIDL-Lite
-    return DIDLLiteString.arg(fileInfo.fileName(), fileInfo.owner(), mimetype.split("/").first(), mimetype, address);
+    return DIDLLiteString.arg(fileInfo.fileName(), fileInfo.owner(), mg.getMediaType(fileInfo.filePath()),
+                              mg.fileMimeType(fileInfo), address);
 }

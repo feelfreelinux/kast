@@ -3,27 +3,34 @@
 #include "DLNAPlaybackInfo.h"
 #include <QDebug>
 
-Kast::Kast(QStringList & files, QObject *parent) : QObject(parent), filesList(files)
+Kast::Kast(QObject *parent) : QObject(parent)
 {
     qDebug() << "Starting server...";
 
-    fileServer = new HttpFileServer(port, QHostAddress::Any, this);
-    SSDPdiscovery *test = new SSDPdiscovery(this);
-    connect(test, SIGNAL(foundRenderer(DLNARenderer*)), this, SLOT(foundRenderer(DLNARenderer*)));
+    fileServer = new HttpFileServer(QHostAddress::Any, port, this);
+    SSDPdiscovery * discovery = new SSDPdiscovery(this);
+    connect(discovery, SIGNAL(foundRenderer(DLNARenderer*)), this, SLOT(foundRenderer(DLNARenderer*)));
     // Start SSDP discovery
-    test->begin();
+    discovery->run();
 }
+
+void Kast::addItemToQueue(QString &item_url)
+{
+    queue.append(item_url);
+}
+
 void Kast::foundRenderer(DLNARenderer *renderer)
 {
     qDebug() << "Renderer found: " + renderer->getName();
     // Get local address
-    int id = fileServer->serveFile(QUrl(filesList[0])); // File to serve
+    int id = fileServer->serveFile(QUrl(queue[0])); // File to serve
     QString fileName = fileServer->getFilenameFromID(id),
             local_address = getLocalAddress().toString(),
             port_number = QString::number(port);
     // Set playback url, and play it
     renderer->stopPlayback();
-    renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number, QString::number(id), fileName)), QFileInfo(filesList[0]));
+    renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number,QString::number(id), fileName)),
+                             QFileInfo(queue[0]));
     renderer->playPlayback();
 }
 

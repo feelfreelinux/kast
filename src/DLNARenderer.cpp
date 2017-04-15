@@ -7,7 +7,6 @@ DLNARenderer::DLNARenderer(QUrl url, QObject *parent) : QObject(parent), sam(new
     connect(sam, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)), this, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)));
 }
 
-QString DLNARenderer::getControlUrl() { return controlUrl; }
 QString DLNARenderer::getName() { return serverName; }
 QUrl DLNARenderer::getUrl() { return serverUrl; }
 
@@ -15,7 +14,6 @@ void DLNARenderer::setName(const QString & name) { serverName = name; }
 
 void DLNARenderer::setControlUrl(const QString & url)
 {
-    controlUrl = url;
     fullcontrolUrl = serverUrl;
     fullcontrolUrl.setPath(url);
 }
@@ -65,16 +63,6 @@ void DLNARenderer::stopPlayback()
     sam->doAction("Stop", QMap<QString, QString>(), fullcontrolUrl);
 }
 
-void DLNARenderer::previousPlayback()
-{
-    sam->doAction("Previous", QMap<QString, QString>(), fullcontrolUrl);
-}
-
-void DLNARenderer::nextPlayback()
-{
-    sam->doAction("Next", QMap<QString, QString>(), fullcontrolUrl);
-}
-
 void DLNARenderer::seekPlayback(QTime time)
 {
     QMap<QString, QString> dataMap;
@@ -82,4 +70,14 @@ void DLNARenderer::seekPlayback(QTime time)
     dataMap.insert("Unit", "REL_TIME");
     dataMap.insert("Target", time.toString());
     sam->doAction("Seek", dataMap, fullcontrolUrl);
+}
+
+void DLNARenderer::previousItem()
+{
+    sam->doAction("Previous", QMap<QString, QString>(), fullcontrolUrl);
+}
+
+void DLNARenderer::nextItem()
+{
+    sam->doAction("Next", QMap<QString, QString>(), fullcontrolUrl);
 }

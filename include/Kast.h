@@ -14,11 +14,12 @@ class Kast : public QObject
 {
     Q_OBJECT
 public:
-    Kast(QStringList & core, QObject *parent = 0);
+    Kast(QObject *parent = 0);
+    void addItemToQueue(QString & item_url);
     QHostAddress getLocalAddress();
 private:
     HttpFileServer *fileServer;
-    QStringList filesList;
+    QStringList queue;
 private slots:
     void foundRenderer(DLNARenderer*);
 };

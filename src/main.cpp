@@ -1,5 +1,7 @@
-#include <QCoreApplication>
 #include "Kast.h"
+
+#include <QCoreApplication>
+
 
 int main(int argc, char *argv[])
 {
@@ -11,6 +13,9 @@ int main(int argc, char *argv[])
     QStringList files = app.arguments();
     files.removeFirst();
 
-    Kast kast(files);
+    Kast kast;
+    for(auto file : files)
+        kast.addItemToQueue(file);
+
     return app.exec();
 }

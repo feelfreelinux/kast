@@ -20,20 +20,23 @@ public:
     
     void setName(const QString & name);
     void setControlUrl(const QString & name);
+
     // DLNA functions
     void setPlaybackUrl(const QUrl & url, const QFileInfo & fileInfo);
     void setNextPlaybackUrl(const QUrl & url);
+
     void playPlayback();
     void stopPlayback();
     void pausePlayback();
-    void nextPlayback();
-    void previousPlayback();
     void seekPlayback(QTime time);
+
+    void nextItem();
+    void previousItem();
     void queryPlaybackInfo();
 private:
     SOAPActionManager *sam;
     QUrl serverUrl, fullcontrolUrl;
-    QString serverName, controlUrl;
+    QString serverName;
 signals:
     void receivePlaybackInfo(DLNAPlaybackInfo*);
 };

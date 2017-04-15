@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtNetwork>
 
+
 // Xml request's body
 const QString SOAPXmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\" standalone=\"yes\" ?>"
                               "<s:Envelope s:encodingStyle=\"http://schemas.xmlsoap.org/soap/encoding/\" "
@@ -20,6 +21,11 @@ const QString SOAPXmlHeader = "<?xml version=\"1.0\" encoding=\"utf-8\" standalo
                                "&lt;upnp:class&gt;object.item.%3Item&lt;/upnp:class&gt;"
                                "&lt;res protocolInfo=\"http-get:*:%4:DLNA.ORG_OP=01;DLNA.ORG_CI=0;DLNA.ORG_FLAGS=01700000000000000000000000000000\" &gt;"
                                "%5&lt;/res&gt;&lt;/item&gt;&lt;/DIDL-Lite&gt;";
+
+/**
+ * This class handles network requests from DLNARenderer.
+ */
+
 
 class SOAPActionManager : public QObject
 {
