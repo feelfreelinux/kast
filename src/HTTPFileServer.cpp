@@ -2,7 +2,6 @@
 #include "MimeGuesser.h"
 
 #include <QTcpServer>
-#include <QMimeDatabase>
 #include <QFile>
 #include <QFileInfo>
 #include <QTcpSocket>
