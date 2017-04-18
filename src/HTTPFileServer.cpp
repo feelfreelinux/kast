@@ -90,6 +90,7 @@ void HttpFileServer::handleIncoming()
             QString range = requestMap["Range"];
             range = range.mid(6, range.length()); // 'bytes=' is 6 chars
             qint64 seek = range.left(range.indexOf("-")).toInt();
+            qDebug() << range.right(range.indexOf("-"));
             // Check, is requested filesize acceptable
             if(seek<=filesize.toInt())
             {
@@ -129,7 +130,7 @@ void HttpFileServer::handleIncoming()
         {
             QByteArray block; block.resize(65536);
 
-            while(!file.atEnd())
+            while(!file.atEnd() && clientConnection->isOpen())
             {
                 // Send part of file to client
                 qint64 read = file.read(block.data(), 65536);
