@@ -22,5 +22,6 @@ private:
     QStringList queue;
 private slots:
     void foundRenderer(DLNARenderer*);
+    void handleResponse(const QString, const QString);
 };
 #endif // KAST_H

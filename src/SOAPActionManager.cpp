@@ -12,7 +12,6 @@ SOAPActionManager::SOAPActionManager(QObject *parent) : QObject(parent)
 void SOAPActionManager::doAction(const QString &action, const QMap<QString, QString> &dataMap, const QUrl &controlUrl)
 {
     QNetworkRequest request;
-
     // Build xml data string
     QString actionData = "";
     if (!dataMap.isEmpty() || !dataMap.isDetached()) {
@@ -36,7 +35,6 @@ void SOAPActionManager::doAction(const QString &action, const QMap<QString, QStr
     if (action == "GetPositionInfo")
         connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processPlaybackInfo(QNetworkReply*)));
 
-    // Only used for debbuging
     else connect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processData(QNetworkReply*)));
 
     mgr->post(request, data.toUtf8());
@@ -44,12 +42,30 @@ void SOAPActionManager::doAction(const QString &action, const QMap<QString, QStr
 
 void SOAPActionManager::processData(QNetworkReply* reply)
 {
-    // Write debug log
-    qDebug() << reply->readAll().data();
+    QString data = reply->readAll();
     reply->close();
 
     // We want to be able to connect it to few slots, so lets disconnect it for now
     disconnect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processData(QNetworkReply*)));
+
+    qDebug() << "SOAPActionManager: Got xml response " + data;
+    // Initial value, used if response type is not detected
+    QString responseType = "UNDEFINED";
+
+    // @TODO Add nice error handling here. It should be simple to implement, and could be also handled in receivedResponse signal.
+    QXmlStreamReader xml(data);
+    while(!xml.hasError() && !xml.atEnd())
+    {
+        if(xml.name().contains("Response"))
+        {
+            responseType = xml.name().toString();
+            break; // If response type is detected, break the loop
+        }
+        xml.readNextStartElement();
+    }
+    // Emit signal with response's type, and raw data
+    emit receivedResponse(responseType, data);
+
 }
 
 void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
@@ -57,6 +73,9 @@ void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
     // Construct xml parser, from reply's data, close socket
     QXmlStreamReader xml(reply->readAll());
     reply->close();
+
+    // We want to be able to connect it to few slots, so lets disconnect it for now
+    disconnect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processPlaybackInfo(QNetworkReply*)));
 
     DLNAPlaybackInfo playbackInfo;
     // Parse return url
@@ -70,8 +89,6 @@ void SOAPActionManager::processPlaybackInfo(QNetworkReply *reply)
     }
 
     emit receivePlaybackInfo(&playbackInfo);
-    // We want to be able to connect it to few slots, so lets disconnect it for now
-    disconnect(mgr, SIGNAL(finished(QNetworkReply*)), this, SLOT(processPlaybackInfo(QNetworkReply*)));
 }
 
 // Generates DIDL-Lite metadata

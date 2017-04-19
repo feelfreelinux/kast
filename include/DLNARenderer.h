@@ -39,6 +39,8 @@ private:
     QString serverName;
 signals:
     void receivePlaybackInfo(DLNAPlaybackInfo*);
+    void receivedResponse(const QString, const QString);
+
 };
 
 #endif // DLNARENDERER_H

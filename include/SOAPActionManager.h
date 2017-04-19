@@ -36,6 +36,7 @@ public:
     QString generateMetadata(const QFileInfo &fileInfo, const QString & address);
 signals:
     void receivePlaybackInfo(DLNAPlaybackInfo*);
+    void receivedResponse(const QString, const QString);
 private:
     QNetworkAccessManager *mgr;
 private slots:

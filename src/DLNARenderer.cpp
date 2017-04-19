@@ -4,7 +4,9 @@
 #include <QDebug>
 
 DLNARenderer::DLNARenderer(QUrl url, QObject *parent) : QObject(parent), sam(new SOAPActionManager()), serverUrl(url) {
+    // Pass SOAPActionManager's signals to parent class
     connect(sam, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)), this, SIGNAL(receivePlaybackInfo(DLNAPlaybackInfo*)));
+    connect(sam, SIGNAL(receivedResponse(const QString,const QString)), this, SIGNAL(receivedResponse(const QString, const QString)));
 }
 
 QString DLNARenderer::getName() { return serverName; }

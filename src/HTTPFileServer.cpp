@@ -50,7 +50,7 @@ void HttpFileServer::handleIncoming()
             QString fileName(QUrl::fromPercentEncoding(line.right(line.length() - line.lastIndexOf("/") - 1).toUtf8()));
             filePath = sharedFiles[id];
             // Ensures the file is valid
-            qDebug() << filePath.toString();
+            qDebug() << "File accessed: " + filePath.toString();
             fileinfo.setFile(filePath.toString());
             if(fileinfo.suffix() != line.split(".").last() ||
                     fileinfo.fileName() != fileName ||
@@ -90,7 +90,6 @@ void HttpFileServer::handleIncoming()
             QString range = requestMap["Range"];
             range = range.mid(6, range.length()); // 'bytes=' is 6 chars
             qint64 seek = range.left(range.indexOf("-")).toInt();
-            qDebug() << range.right(range.indexOf("-"));
             // Check, is requested filesize acceptable
             if(seek<=filesize.toInt())
             {

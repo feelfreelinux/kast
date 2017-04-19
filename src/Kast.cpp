@@ -22,16 +22,9 @@ void Kast::addItemToQueue(QString &item_url)
 void Kast::foundRenderer(DLNARenderer *renderer)
 {
     qDebug() << "Renderer found: " + renderer->getName();
-    // Get local address
-    int id = fileServer->serveFile(QUrl(queue[0])); // File to serve
-    QString fileName = fileServer->getFilenameFromID(id),
-            local_address = getLocalAddress().toString(),
-            port_number = QString::number(port);
-    // Set playback url, and play it
+    connect(renderer, SIGNAL(receivedResponse(QString,QString)), this, SLOT(handleResponse(QString,QString)));
+    // Stop playback. Responses will be handled in handleResponse
     renderer->stopPlayback();
-    renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number,QString::number(id), fileName)),
-                             QFileInfo(queue[0]));
-    renderer->playPlayback();
 }
 
 QHostAddress Kast::getLocalAddress()
@@ -45,6 +38,27 @@ QHostAddress Kast::getLocalAddress()
              return address;
     }
     return QHostAddress();
+}
+
+void Kast::handleResponse(const QString responseType, const QString data)
+{
+    // Get renderer object
+    DLNARenderer *renderer = qobject_cast<DLNARenderer *>(sender());
+    qDebug() << "^Detected response type: "+responseType;
+
+    // Handle responses
+    if(responseType=="StopResponse") {
+        // Host file, and send its url to renderer
+        int id = fileServer->serveFile(QUrl(queue[0])); // File to serve
+
+        QString fileName = fileServer->getFilenameFromID(id),
+                local_address = getLocalAddress().toString(),
+                port_number = QString::number(port);
+
+        renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number,QString::number(id), fileName)),
+                                 QFileInfo(queue[0]));
+
+    } else if(responseType=="SetAVTransportURIResponse") renderer->playPlayback(); // Just play the playback url
 }
 
 
