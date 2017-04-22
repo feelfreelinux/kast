@@ -54,15 +54,10 @@ void SOAPActionManager::processData(QNetworkReply* reply)
 
     // @TODO Add nice error handling here. It should be simple to implement, and could be also handled in receivedResponse signal.
     QXmlStreamReader xml(data);
-    while(!xml.hasError() && !xml.atEnd())
-    {
-        if(xml.name().contains("Response"))
-        {
-            responseType = xml.name().toString();
-            break; // If response type is detected, break the loop
-        }
+    while(!xml.hasError() && !xml.atEnd() && !xml.name().contains("Response"))
         xml.readNextStartElement();
-    }
+    if(xml.name().contains("Response"))
+        responseType = xml.name().toString();
     // Emit signal with response's type, and raw data
     emit receivedResponse(responseType, data);
 

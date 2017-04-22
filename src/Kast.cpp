@@ -42,12 +42,14 @@ QHostAddress Kast::getLocalAddress()
 
 void Kast::handleResponse(const QString responseType, const QString data)
 {
+    Q_UNUSED(data); //May be needed in the future
     // Get renderer object
     DLNARenderer *renderer = qobject_cast<DLNARenderer *>(sender());
     qDebug() << "^Detected response type: "+responseType;
 
     // Handle responses
-    if(responseType=="StopResponse") {
+    if(responseType == "StopResponse")
+    {
         // Host file, and send its url to renderer
         int id = fileServer->serveFile(QUrl(queue[0])); // File to serve
 
@@ -58,7 +60,9 @@ void Kast::handleResponse(const QString responseType, const QString data)
         renderer->setPlaybackUrl(QUrl(QString("http://%1:%2/%3/%4").arg(local_address, port_number,QString::number(id), fileName)),
                                  QFileInfo(queue[0]));
 
-    } else if(responseType=="SetAVTransportURIResponse") renderer->playPlayback(); // Just play the playback url
+    }
+    else if(responseType == "SetAVTransportURIResponse")
+        renderer->playPlayback(); // Just play the playback url
 }
 
 
