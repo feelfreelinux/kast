@@ -17,6 +17,7 @@ private:
     QMap<int, QUrl> sharedFiles;
 private slots:
     void handleIncoming();
+    void readSocketData();
 };
 
 #endif // HTTPFILESERVER_H

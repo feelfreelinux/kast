@@ -19,17 +19,26 @@ HttpFileServer::HttpFileServer(QHostAddress address, int port, QObject *parent) 
 // Handles incoming connection
 void HttpFileServer::handleIncoming()
 {
-    MimeGuesser mg;
-    QFileInfo fileinfo;
-
+    // Connect needed signals
     QTcpSocket *clientConnection = server->nextPendingConnection();
     connect(clientConnection, SIGNAL(disconnected()),
             clientConnection, SLOT(deleteLater()));
-    clientConnection->waitForReadyRead();
+    connect(clientConnection, SIGNAL(readyRead()),
+            this, SLOT(readSocketData()));
 
+}
+
+void HttpFileServer::readSocketData()
+{
+    MimeGuesser mg;
+    QFileInfo fileinfo;
     QUrl filePath;
     QMap<QString, QString> requestMap;
     QString requestType; // Request handled for now - GET and HEAD
+
+    // Retreive socket
+    QTcpSocket *clientConnection = qobject_cast<QTcpSocket *>(sender());
+
     // Read client's request
     while(!clientConnection->atEnd())
     {
@@ -61,7 +70,6 @@ void HttpFileServer::handleIncoming()
                 // If file is not valid, write 404 and return
                 qDebug() << "File not valid: " + fileName;
                 clientConnection->write("HTTP/1.0 404 NOT FOUND\r\n");
-                clientConnection->flush();
                 clientConnection->disconnectFromHost();
                 return;
             }
@@ -123,7 +131,6 @@ void HttpFileServer::handleIncoming()
                                                              mg.fileMimeType(fileinfo));
         // Write header to client
         clientConnection->write(header.toUtf8());
-        clientConnection->waitForBytesWritten();
         // If type is GET, send data of file.
         if(requestType=="GET")
         {
@@ -134,7 +141,6 @@ void HttpFileServer::handleIncoming()
                 // Send part of file to client
                 qint64 read = file.read(block.data(), 65536);
                 clientConnection->write(block, read);
-                clientConnection->waitForBytesWritten();
             }
 
             file.close();
@@ -143,7 +149,6 @@ void HttpFileServer::handleIncoming()
     else
         // Send 404 if path is not valid
         clientConnection->write("HTTP/1.0 404 NOT FOUND\r\n");
-    clientConnection->flush();
     clientConnection->disconnectFromHost();
 }
 
