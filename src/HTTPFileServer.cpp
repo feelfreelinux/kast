@@ -129,11 +129,12 @@ void HttpFileServer::handleIncoming()
         {
             QByteArray block; block.resize(65536);
 
-            while(!file.atEnd() && clientConnection->isOpen())
+            while(!file.atEnd() && clientConnection->state() == QTcpSocket::ConnectedState)
             {
                 // Send part of file to client
                 qint64 read = file.read(block.data(), 65536);
                 clientConnection->write(block, read);
+                clientConnection->waitForBytesWritten();
             }
 
             file.close();
