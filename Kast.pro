@@ -1,5 +1,4 @@
-QT += core network
-QT -= gui
+QT += core network gui
 
 TARGET = kast
 
@@ -14,7 +13,11 @@ SOURCES += src/main.cpp \
     src/Kast.cpp \
     src/SOAPActionManager.cpp \
     src/SSDPDiscovery.cpp \
-    src/MimeGuesser.cpp
+    src/MimeGuesser.cpp \
+    src/Thumbnailer/imagewriter.cpp \
+    src/Thumbnailer/moviedecoder.cpp \
+    src/Thumbnailer/videothumbnailer.cpp \
+    src/ThumbnailCreator.cpp
 
 # The following define makes your compiler emit warnings if you use
 # any feature of Qt which as been marked deprecated (the exact warnings
@@ -37,4 +40,12 @@ HEADERS += \
     include/Kast.h \
     include/DLNAPlaybackInfo.h \
     include/DLNARendererIcon.h \
-    include/MimeGuesser.h
+    include/MimeGuesser.h \
+    include/Thumbnailer/histogram.h \
+    include/Thumbnailer/imagewriter.h \
+    include/Thumbnailer/moviedecoder.h \
+    include/Thumbnailer/videoframe.h \
+    include/Thumbnailer/videothumbnailer.h \
+    include/ThumbnailCreator.h
+
+unix|win32: LIBS += -lavcodec -lavutil -lavformat -lavfilter -lswscale
