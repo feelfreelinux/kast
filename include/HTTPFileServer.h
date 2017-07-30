@@ -2,22 +2,23 @@
 #define HTTPFILESERVER_H
 
 #include <QtNetwork>
-#include <QString>
+#include "HTTPFileClient.h"
 
-class HttpFileServer : public QObject
+// HTTPServer's port
+const int port = 5437;
+
+class HttpFileServer : public QTcpServer
 {
     Q_OBJECT
 public:
-    HttpFileServer(QHostAddress address, int port, QObject *parent = 0);
+    explicit HttpFileServer(QObject *parent = 0);
+    void startServer();
     // Adds file to server stack and returns the ID of added file
     int serveFile(const QUrl & path);
     QString getFilenameFromID(const int id);
 private:
-    QTcpServer *server;
     QMap<int, QUrl> sharedFiles;
-private slots:
-    void handleIncoming();
-    void readSocketData();
+protected:
+    void incomingConnection(qintptr socketDescriptor);
 };
-
 #endif // HTTPFILESERVER_H

@@ -11,6 +11,7 @@ TEMPLATE = app
 SOURCES += src/main.cpp \
     src/DLNARenderer.cpp \
     src/HTTPFileServer.cpp \
+    src/HTTPFileClient.cpp \
     src/Kast.cpp \
     src/SOAPActionManager.cpp \
     src/SSDPDiscovery.cpp \
@@ -32,6 +33,7 @@ INCLUDEPATH += include
 HEADERS += \
     include/DLNARenderer.h \
     include/HTTPFileServer.h \
+    include/HTTPFileClient.h \
     include/SSDPDiscovery.h \
     include/SOAPActionManager.h \
     include/Kast.h \

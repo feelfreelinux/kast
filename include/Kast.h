@@ -7,8 +7,6 @@
 
 #include <QtNetwork>
 
-// HTTPServer's port
-const int port = 5437;
 
 class Kast : public QObject
 {
