@@ -130,7 +130,7 @@ void HttpFileClient::readyRead()
             range = range.mid(6, range.length()); // 'bytes=' is 6 chars
             qint64 seek = range.left(range.indexOf("-")).toInt();
             // Check, is requested filesize acceptable
-            if(seek<=filesize.toInt())
+            if(seek <= file->size())
             {
                 if(range.endsWith("-"))
                     range.append(QString::number(file->size() - 1));
